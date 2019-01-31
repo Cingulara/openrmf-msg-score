@@ -12,8 +12,7 @@ namespace openstig_msg_score
     class Program
     {
         static void Main(string[] args)
-        {
-           
+        {           
             // Create a new connection factory to create
             // a connection.
             ConnectionFactory cf = new ConnectionFactory();
@@ -30,25 +29,6 @@ namespace openstig_msg_score
                 Console.WriteLine(natsargs.Message.Subject);
                 Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
                 var result = WebClient.GetChecklistXML(Encoding.UTF8.GetString(natsargs.Message.Data));
-
-                // call the URL above with the proper /download/{id} where the ID is the message data
-
-                //  art.CHECKLIST = ChecklistLoader.LoadChecklist(art.rawChecklist);
-                // httpclient to call http://localhost:8084/download/1276172a-771a-48cc-b056-2d2fe9889746 to get an XML string
-
-
-                // Here are some of the accessible properties from
-                // the message:
-                // args.Message.Data;
-                // args.Message.Reply;
-                // args.Message.Subject;
-                // args.Message.ArrivalSubcription.Subject;
-                // args.Message.ArrivalSubcription.QueuedMessageCount;
-                // args.Message.ArrivalSubcription.Queue;
-
-                // Unsubscribing from within the delegate function is supported.
-                // natsargs.Message.ArrivalSubcription.Unsubscribe();
-
             };
             EventHandler<MsgHandlerEventArgs> update = (sender, natsargs) =>
             {
