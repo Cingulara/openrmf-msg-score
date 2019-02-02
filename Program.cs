@@ -19,7 +19,7 @@ namespace openstig_msg_score
 
             // Creates a live connection to the default
             // NATS Server running locally
-            IConnection c = cf.CreateConnection();
+            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("natsserverurl"));
 
             // Setup an event handler to process incoming messages.
             // An anonymous delegate function is used for brevity.

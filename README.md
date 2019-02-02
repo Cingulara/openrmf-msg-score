@@ -17,7 +17,7 @@ Messaging service to process new saves and updates of checklists for scoring. Th
 ## Making your local Docker image
 docker build --rm -t openstig-msg-score:0.1 .
 
-## creating the database user user
+## creating the database user
 * ~/mongodb/bin/mongo 'mongodb://root:myp2ssw0rd@localhost'
 * use admin
 * db.createUser({ user: "openstigscore" , pwd: "openstig1234!", roles: ["readWriteAnyDatabase"]});
