@@ -13,3 +13,19 @@ Messaging service to process new saves and updates of checklists for scoring. Th
 * running `dotnet add package NATS.Client` to add the package
 * dotnet restore to pull in all required libraries
 * The C# NATS client library available at https://github.com/nats-io/csharp-nats
+
+## Making your local Docker image
+docker build --rm -t openstig-msg-score:0.1 .
+
+## creating the database user
+* ~/mongodb/bin/mongo 'mongodb://root:myp2ssw0rd@localhost'
+* use admin
+* db.createUser({ user: "openstigscore" , pwd: "openstig1234!", roles: ["readWriteAnyDatabase"]});
+* use openstigscore
+* db.createCollection("Scores");
+
+## connecting to the database collection straight
+~/mongodb/bin/mongo 'mongodb://openstigscore:openstig1234!@localhost/openstigscore?authSource=admin'
+
+## List out the Scores you have inserted/updated
+db.Scores.find();

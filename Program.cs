@@ -1,43 +1,34 @@
 ﻿using System;
 using NATS.Client;
 using System.Text;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Net.Http;
+
 using openstig_msg_score.Models;
+using openstig_msg_score.Classes;
 
 namespace openstig_msg_score
 {
     class Program
     {
         static void Main(string[] args)
-        {
-           
+        {           
             // Create a new connection factory to create
             // a connection.
             ConnectionFactory cf = new ConnectionFactory();
 
             // Creates a live connection to the default
             // NATS Server running locally
-            IConnection c = cf.CreateConnection();
+            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("natsserverurl"));
 
             // Setup an event handler to process incoming messages.
             // An anonymous delegate function is used for brevity.
             EventHandler<MsgHandlerEventArgs> newChecklist = (sender, natsargs) =>
             {
                 // print the message
+                Console.WriteLine(natsargs.Message.Subject);
                 Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
-                // User u = JsonConvert.DeserializeObject<User>(Encoding.UTF8.GetString(natsargs.Message.Data));
-
-                // Here are some of the accessible properties from
-                // the message:
-                // args.Message.Data;
-                // args.Message.Reply;
-                // args.Message.Subject;
-                // args.Message.ArrivalSubcription.Subject;
-                // args.Message.ArrivalSubcription.QueuedMessageCount;
-                // args.Message.ArrivalSubcription.Queue;
-
-                // Unsubscribing from within the delegate function is supported.
-                //natsargs.Message.ArrivalSubcription.Unsubscribe();
+                var result = WebClient.GetChecklistXML(Encoding.UTF8.GetString(natsargs.Message.Data));
             };
             EventHandler<MsgHandlerEventArgs> update = (sender, natsargs) =>
             {

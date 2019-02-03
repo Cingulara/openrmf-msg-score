@@ -16,7 +16,13 @@
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "stopAtEntry": false,
-            "internalConsoleOptions": "openOnSessionStart"
+            "internalConsoleOptions": "openOnSessionStart",
+            "env": {
+                "openstig-api-read-server" : "http://localhost:8084",
+                "mongoConnection": "mongodb://openstigscore:openstig1234!@localhost",
+                "mongodb": "openstigscore",
+                "natsserverurl": "nats://192.168.11.46:4222"
+            },
         },
         {
             "name": ".NET Core Attach",
