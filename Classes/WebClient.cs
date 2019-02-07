@@ -40,9 +40,14 @@ namespace openstig_msg_score.Classes
                 }
                 catch(HttpRequestException e)
                 {
-                    Console.WriteLine("\nException Caught!");	
+                    Console.WriteLine("\nHTTP Exception Caught!");	
                     Console.WriteLine("Message :{0}", e.Message);
                     throw e;
+                }
+                catch (Exception ex) {
+                    Console.WriteLine("\nGeneral  exception Caught!");	
+                    Console.WriteLine("Message :{0}", ex.Message);
+                    throw ex;
                 }
             }
         }
