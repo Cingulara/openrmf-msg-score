@@ -129,6 +129,7 @@ namespace openstig_msg_score.Data {
                 }
                 else
                 {
+                    body.created = DateTime.Now;
                     var result = await AddScore(body);
                     if (result.InternalId != null && !result.InternalId.ToString().StartsWith("0000"))
                         return true;
@@ -137,6 +138,7 @@ namespace openstig_msg_score.Data {
                 }
                 var actionResult = await _context.Scores.ReplaceOneAsync(filter, body);
                 if (actionResult.ModifiedCount == 0) { //never was entered, so Insert
+                    body.created = DateTime.Now;
                     var result = await AddScore(body);
                     if (result.InternalId != null && !result.InternalId.ToString().StartsWith("0000"))
                         return true;
