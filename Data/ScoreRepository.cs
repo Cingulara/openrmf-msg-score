@@ -28,6 +28,7 @@ namespace openstig_msg_score.Data {
                 throw ex;
             }
         }
+
         private ObjectId GetInternalId(string id)
         {
             ObjectId internalId;
@@ -105,10 +106,17 @@ namespace openstig_msg_score.Data {
 
         public async Task<bool> UpdateScore(Score body)
         {
-            var filter = Builders<Score>.Filter.Eq(s => s.InternalId, body.InternalId);
+            var filter = Builders<Score>.Filter.Eq(s => s.artifactId, body.artifactId);
             try
             {
                 var actionResult = await _context.Scores.ReplaceOneAsync(filter, body);
+                if (actionResult.ModifiedCount == 0) { //never was entered, so Insert
+                    var result = await AddScore(body);
+                    if (result.InternalId != null && !result.InternalId.ToString().StartsWith("0000"))
+                        return true;
+                    else
+                        return false;
+                }
                 return actionResult.IsAcknowledged && actionResult.ModifiedCount > 0;
             }
             catch (Exception ex)

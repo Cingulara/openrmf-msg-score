@@ -8,10 +8,12 @@ namespace openstig_msg_score.Classes
 {
     public static class ScoringEngine 
     {
-        public static Score ScoreChecklist (string rawChecklist)
+        public static Score  ScoreChecklistString(string rawChecklist) {
+          return ScoreChecklist(ChecklistLoader.LoadChecklist(rawChecklist));
+        }
+        public static Score ScoreChecklist (CHECKLIST xml)
         {
             try {
-                CHECKLIST xml = ChecklistLoader.LoadChecklist(rawChecklist);
                 Score score = new Score();
                 // CAT 1
                 score.totalCat1NotReviewed = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_reviewed" && 

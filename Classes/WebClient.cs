@@ -10,7 +10,7 @@ namespace openstig_msg_score.Classes
 {
     public static class WebClient 
     {
-        public static async Task<Artifact> GetChecklistXML(string id)
+        public static async Task<Artifact> GetChecklistAsync(string artifactId)
         {
             // Create a New HttpClient object and dispose it when done, so the app doesn't leak resources
             using (HttpClient client = new HttpClient())
@@ -21,8 +21,8 @@ namespace openstig_msg_score.Classes
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/xml");
                     string hosturl = Environment.GetEnvironmentVariable("openstig-api-read-server");
-                    Console.WriteLine("URL: {0}", hosturl + "/" + id);
-                    HttpResponseMessage response = await client.GetAsync(hosturl + "/" + id);
+                    Console.WriteLine("URL: {0}", hosturl + "/" + artifactId);
+                    HttpResponseMessage response = await client.GetAsync(hosturl + "/" + artifactId);
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     XmlSerializer serializer = new XmlSerializer(typeof(Artifact));
@@ -31,12 +31,6 @@ namespace openstig_msg_score.Classes
                     {
                         art = (Artifact)serializer.Deserialize(reader);
                     }
-                    // Score score = ScoringEngine.ScoreChecklist(responseBody);                    
-                    // score.title = art.title;
-                    // score.artifactId = art.InternalId;
-                    // score.description = art.description;
-                    // score.created = DateTime.Now;
-                    // score.SaveScore();
                     return art;
                 }
                 catch(HttpRequestException e)

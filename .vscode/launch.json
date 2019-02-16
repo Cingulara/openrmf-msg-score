@@ -19,7 +19,7 @@
             "internalConsoleOptions": "openOnSessionStart",
             "env": {
                 "openstig-api-read-server" : "http://localhost:8084",
-                "mongoConnection": "mongodb://openstigscore:openstig1234!@localhost/openstigscore?authSource=openstigscore",
+                "mongoConnection": "mongodb://openstigscore:openstig1234!@localhost/openstigscore?authSource=admin",
                 "mongodb": "openstigscore",
                 "natsserverurl": "nats://192.168.11.46:4222"
             },

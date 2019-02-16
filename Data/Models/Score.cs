@@ -72,7 +72,7 @@ namespace openstig_msg_score.Models
                 await _scoreRepo.UpdateScore(this);
             }
             catch (Exception ex) {
-                Console.WriteLine(string.Format("Error Saving Score for {0}. {1}", this.title, ex.Message));
+                Console.WriteLine(string.Format("Error Updating Score for {0}. {1}", this.title, ex.Message));
                 throw ex;
             }
         }
