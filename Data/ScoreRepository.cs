@@ -28,6 +28,14 @@ namespace openstig_msg_score.Data {
                 throw ex;
             }
         }
+        private ObjectId GetInternalId(string id)
+        {
+            ObjectId internalId;
+            if (!ObjectId.TryParse(id, out internalId))
+                internalId = ObjectId.Empty;
+
+            return internalId;
+        }
 
         // query after Id or InternalId (BSonId value)
         //
@@ -35,10 +43,8 @@ namespace openstig_msg_score.Data {
         {
             try
             {
-                ObjectId internalId = GetInternalId(id);
                 return await _context.Scores
-                                .Find(Score => Score.id == new Guid(id)).FirstOrDefaultAsync();
-                                //|| Score.InternalId == internalId).FirstOrDefaultAsync();
+                                .Find(Score => Score.InternalId == GetInternalId(id)).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -64,21 +70,13 @@ namespace openstig_msg_score.Data {
                 throw ex;
             }
         }
-
-        private ObjectId GetInternalId(string id)
-        {
-            ObjectId internalId;
-            if (!ObjectId.TryParse(id, out internalId))
-                internalId = ObjectId.Empty;
-
-            return internalId;
-        }
         
-        public async Task AddScore(Score item)
+        public async Task<Score> AddScore(Score item)
         {
             try
             {
                 await _context.Scores.InsertOneAsync(item);
+                return item;
             }
             catch (Exception ex)
             {
@@ -105,37 +103,13 @@ namespace openstig_msg_score.Data {
             }
         }
 
-        public async Task<bool> UpdateScore(string id, Score body)
+        public async Task<bool> UpdateScore(Score body)
         {
-            var filter = Builders<Score>.Filter.Eq(s => s.id.ToString(), id);
-            var update = Builders<Score>.Update
-                            .Set(s => s, body)
-                            .CurrentDate(s => s.updatedOn);
-
+            var filter = Builders<Score>.Filter.Eq(s => s.InternalId, body.InternalId);
             try
             {
-                UpdateResult actionResult 
-                    = await _context.Scores.UpdateOneAsync(filter, update);
-
-                return actionResult.IsAcknowledged
-                    && actionResult.ModifiedCount > 0;
-            }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
-        }
-
-        public async Task<bool> RemoveAllScores()
-        {
-            try
-            {
-                DeleteResult actionResult 
-                    = await _context.Scores.DeleteManyAsync(new BsonDocument());
-
-                return actionResult.IsAcknowledged
-                    && actionResult.DeletedCount > 0;
+                var actionResult = await _context.Scores.ReplaceOneAsync(filter, body);
+                return actionResult.IsAcknowledged && actionResult.ModifiedCount > 0;
             }
             catch (Exception ex)
             {

@@ -28,24 +28,30 @@ namespace openstig_msg_score
                 // print the message
                 Console.WriteLine(natsargs.Message.Subject);
                 Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
-                var result = WebClient.GetChecklistXML(Encoding.UTF8.GetString(natsargs.Message.Data));
+                Task<Artifact> checklist = WebClient.GetChecklistXML(Encoding.UTF8.GetString(natsargs.Message.Data));
+                if (checklist != null && checklist.Result != null && !string.IsNullOrEmpty(checklist.Result.rawChecklist)){
+                    Score score = ScoringEngine.ScoreChecklist(checklist.Result.rawChecklist);          
+                    score.title = checklist.Result.title;
+                    score.artifactId = checklist.Result.InternalId;
+                    score.description = checklist.Result.description;
+                    score.created = DateTime.Now;
+                    score.SaveScore();
+                }
             };
             EventHandler<MsgHandlerEventArgs> update = (sender, natsargs) =>
             {
                 // print the message
                 Console.WriteLine(natsargs.Message.Subject);
                 Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
-                // Here are some of the accessible properties from
-                // the message:
-                // args.Message.Data;
-                // args.Message.Reply;
-                // args.Message.Subject;
-                // args.Message.ArrivalSubcription.Subject;
-                // args.Message.ArrivalSubcription.QueuedMessageCount;
-                // args.Message.ArrivalSubcription.Queue;
-
-                // Unsubscribing from within the delegate function is supported.
-                //natsargs.Message.ArrivalSubcription.Unsubscribe();
+                Task<Artifact> checklist = WebClient.GetChecklistXML(Encoding.UTF8.GetString(natsargs.Message.Data));
+                if (checklist != null && checklist.Result != null && !string.IsNullOrEmpty(checklist.Result.rawChecklist)){
+                    Score score = ScoringEngine.ScoreChecklist(checklist.Result.rawChecklist);          
+                    score.title = checklist.Result.title;
+                    score.artifactId = checklist.Result.InternalId;
+                    score.description = checklist.Result.description;
+                    score.created = DateTime.Now;
+                    score.SaveScore();
+                }
             };
 
             // The simple way to create an asynchronous subscriber
