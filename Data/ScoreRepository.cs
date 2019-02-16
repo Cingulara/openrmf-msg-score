@@ -44,8 +44,7 @@ namespace openstig_msg_score.Data {
         {
             try
             {
-                return await _context.Scores
-                                .Find(Score => Score.InternalId == GetInternalId(id)).FirstOrDefaultAsync();
+                return await _context.Scores.Find(Score => Score.InternalId == GetInternalId(id)).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -104,11 +103,38 @@ namespace openstig_msg_score.Data {
             }
         }
 
+
+        private async Task<Score> GetScoreByArtifact(ObjectId artifactId)
+        {
+            try
+            {
+                return await _context.Scores.Find(Score => Score.artifactId == artifactId).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+            }
+        }
+        
         public async Task<bool> UpdateScore(Score body)
         {
             var filter = Builders<Score>.Filter.Eq(s => s.artifactId, body.artifactId);
             try
             {
+                // get the old InternalId as we are going off artifactid not InternalId for this
+                var oldScore = await GetScoreByArtifact(body.artifactId);
+                if (oldScore != null){
+                    body.InternalId = oldScore.InternalId;
+                }
+                else
+                {
+                    var result = await AddScore(body);
+                    if (result.InternalId != null && !result.InternalId.ToString().StartsWith("0000"))
+                        return true;
+                    else
+                        return false;
+                }
                 var actionResult = await _context.Scores.ReplaceOneAsync(filter, body);
                 if (actionResult.ModifiedCount == 0) { //never was entered, so Insert
                     var result = await AddScore(body);
