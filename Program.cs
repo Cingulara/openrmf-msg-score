@@ -80,8 +80,11 @@ namespace openstig_msg_score
             // The simple way to create an asynchronous subscriber
             // is to simply pass the event in.  Messages will start
             // arriving immediately.
+            logger.Info("setting up the openSTIG save new subscriptions");
             IAsyncSubscription asyncNew = c.SubscribeAsync("openstig.save.new", newChecklistScore);
+            logger.Info("setting up the openSTIG save update subscriptions");
             IAsyncSubscription asyncUpdate = c.SubscribeAsync("openstig.save.update", updateChecklistScore);
+            logger.Info("openSTIG subscriptions set successfully!");
         }
         private static ObjectId GetInternalId(string id)
         {
