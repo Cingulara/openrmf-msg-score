@@ -8,6 +8,8 @@ using NLog.Config;
 using openstig_msg_score.Models;
 using openstig_msg_score.Classes;
 
+using MongoDB.Bson;
+
 namespace openstig_msg_score
 {
     class Program
@@ -38,7 +40,7 @@ namespace openstig_msg_score
                     if (checklist != null && checklist.CHECKLIST != null) {
                         Score score = ScoringEngine.ScoreChecklist(checklist.CHECKLIST);          
                         score.title = checklist.title;
-                        score.artifactId = checklist.InternalId;
+                        score.artifactId = GetInternalId(Encoding.UTF8.GetString(natsargs.Message.Data));
                         score.description = checklist.description;
                         score.created = DateTime.Now;
                         logger.Info("Saving new score for artifactId {0}", score.artifactId.ToString());
@@ -61,7 +63,8 @@ namespace openstig_msg_score
                     if (checklist != null && checklist.CHECKLIST != null) {
                         Score score = ScoringEngine.ScoreChecklist(checklist.CHECKLIST);          
                         score.title = checklist.title;
-                        score.artifactId = checklist.InternalId;
+                        score.created = checklist.created;
+                        score.artifactId = GetInternalId(Encoding.UTF8.GetString(natsargs.Message.Data));
                         score.description = checklist.description;
                         score.updatedOn = DateTime.Now;
                         logger.Info("Saving updated score for artifactId {0}", score.artifactId.ToString());
@@ -79,6 +82,13 @@ namespace openstig_msg_score
             // arriving immediately.
             IAsyncSubscription asyncNew = c.SubscribeAsync("openstig.save.new", newChecklistScore);
             IAsyncSubscription asyncUpdate = c.SubscribeAsync("openstig.save.update", updateChecklistScore);
+        }
+        private static ObjectId GetInternalId(string id)
+        {
+            ObjectId internalId;
+            if (!ObjectId.TryParse(id, out internalId))
+                internalId = ObjectId.Empty;
+            return internalId;
         }
     }
 }
