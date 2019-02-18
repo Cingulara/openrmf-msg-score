@@ -13,15 +13,13 @@ namespace openstig_msg_score.Data {
         Task<IEnumerable<Score>> GetScore(string bodyText, DateTime updatedFrom, long headerSizeLimit);
 
         // add new note document
-        Task AddScore(Score item);
+        Task<Score> AddScore(Score item);
 
         // remove a single document
         Task<bool> RemoveScore(string id);
 
         // update just a single document
-        Task<bool> UpdateScore(string id, Score body);
+        Task<bool> UpdateScore(Score body);
 
-        // should be used with high cautious, only in relation with demo setup
-        Task<bool> RemoveAllScores();
     }
 }
