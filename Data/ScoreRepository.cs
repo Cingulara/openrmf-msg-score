@@ -29,16 +29,22 @@ namespace openstig_msg_score.Data {
             }
         }
 
+        private ObjectId GetInternalId(string id)
+        {
+            ObjectId internalId;
+            if (!ObjectId.TryParse(id, out internalId))
+                internalId = ObjectId.Empty;
+
+            return internalId;
+        }
+
         // query after Id or InternalId (BSonId value)
         //
         public async Task<Score> GetScore(string id)
         {
             try
             {
-                ObjectId internalId = GetInternalId(id);
-                return await _context.Scores
-                                .Find(Score => Score.id == new Guid(id)).FirstOrDefaultAsync();
-                                //|| Score.InternalId == internalId).FirstOrDefaultAsync();
+                return await _context.Scores.Find(Score => Score.InternalId == GetInternalId(id)).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -64,21 +70,13 @@ namespace openstig_msg_score.Data {
                 throw ex;
             }
         }
-
-        private ObjectId GetInternalId(string id)
-        {
-            ObjectId internalId;
-            if (!ObjectId.TryParse(id, out internalId))
-                internalId = ObjectId.Empty;
-
-            return internalId;
-        }
         
-        public async Task AddScore(Score item)
+        public async Task<Score> AddScore(Score item)
         {
             try
             {
                 await _context.Scores.InsertOneAsync(item);
+                return item;
             }
             catch (Exception ex)
             {
@@ -105,20 +103,12 @@ namespace openstig_msg_score.Data {
             }
         }
 
-        public async Task<bool> UpdateScore(string id, Score body)
-        {
-            var filter = Builders<Score>.Filter.Eq(s => s.id.ToString(), id);
-            var update = Builders<Score>.Update
-                            .Set(s => s, body)
-                            .CurrentDate(s => s.updatedOn);
 
+        private async Task<Score> GetScoreByArtifact(ObjectId artifactId)
+        {
             try
             {
-                UpdateResult actionResult 
-                    = await _context.Scores.UpdateOneAsync(filter, update);
-
-                return actionResult.IsAcknowledged
-                    && actionResult.ModifiedCount > 0;
+                return await _context.Scores.Find(Score => Score.artifactId == artifactId).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -126,16 +116,36 @@ namespace openstig_msg_score.Data {
                 throw ex;
             }
         }
-
-        public async Task<bool> RemoveAllScores()
+        
+        public async Task<bool> UpdateScore(Score body)
         {
+            var filter = Builders<Score>.Filter.Eq(s => s.artifactId, body.artifactId);
             try
             {
-                DeleteResult actionResult 
-                    = await _context.Scores.DeleteManyAsync(new BsonDocument());
-
-                return actionResult.IsAcknowledged
-                    && actionResult.DeletedCount > 0;
+                // get the old InternalId as we are going off artifactid not InternalId for this
+                var oldScore = await GetScoreByArtifact(body.artifactId);
+                if (oldScore != null){
+                    body.InternalId = oldScore.InternalId;
+                }
+                else
+                {
+                    body.created = DateTime.Now;
+                    var result = await AddScore(body);
+                    if (result.InternalId != null && !result.InternalId.ToString().StartsWith("0000"))
+                        return true;
+                    else
+                        return false;
+                }
+                var actionResult = await _context.Scores.ReplaceOneAsync(filter, body);
+                if (actionResult.ModifiedCount == 0) { //never was entered, so Insert
+                    body.created = DateTime.Now;
+                    var result = await AddScore(body);
+                    if (result.InternalId != null && !result.InternalId.ToString().StartsWith("0000"))
+                        return true;
+                    else
+                        return false;
+                }
+                return actionResult.IsAcknowledged && actionResult.ModifiedCount > 0;
             }
             catch (Exception ex)
             {

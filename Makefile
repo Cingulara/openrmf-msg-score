@@ -1,4 +1,4 @@
-VERSION ?= 0.2
+VERSION ?= 0.3
 NAME ?= "openstig-msg-score"
 AUTHOR ?= "Dale Bingham"
 NO_CACHE ?= true
