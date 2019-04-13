@@ -38,10 +38,12 @@ namespace openstig_msg_score
                     logger.Info("New NATS data: {0}",Encoding.UTF8.GetString(natsargs.Message.Data));
                     Artifact checklist = WebClient.GetChecklistAsync(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
                     if (checklist != null && checklist.CHECKLIST != null) {
-                        Score score = ScoringEngine.ScoreChecklist(checklist.CHECKLIST);          
-                        score.title = checklist.title;
+                        Score score = ScoringEngine.ScoreChecklist(checklist.CHECKLIST);
+                        score.system = checklist.system;
+                        score.stigType = checklist.stigType;
+                        score.stigRelease = checklist.stigRelease;
                         score.artifactId = GetInternalId(Encoding.UTF8.GetString(natsargs.Message.Data));
-                        score.description = checklist.description;
+                        score.hostName = checklist.hostName;
                         score.created = DateTime.Now;
                         logger.Info("Saving new score for artifactId {0}", score.artifactId.ToString());
                         score.SaveScore();
@@ -61,11 +63,13 @@ namespace openstig_msg_score
                     Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
                     Artifact checklist = WebClient.GetChecklistAsync(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
                     if (checklist != null && checklist.CHECKLIST != null) {
-                        Score score = ScoringEngine.ScoreChecklist(checklist.CHECKLIST);          
-                        score.title = checklist.title;
+                        Score score = ScoringEngine.ScoreChecklist(checklist.CHECKLIST);   
+                        score.system = checklist.system;
+                        score.stigType = checklist.stigType;
+                        score.stigRelease = checklist.stigRelease;
                         score.created = checklist.created;
                         score.artifactId = GetInternalId(Encoding.UTF8.GetString(natsargs.Message.Data));
-                        score.description = checklist.description;
+                        score.hostName = checklist.hostName;
                         score.updatedOn = DateTime.Now;
                         logger.Info("Saving updated score for artifactId {0}", score.artifactId.ToString());
                         score.UpdateScore();
