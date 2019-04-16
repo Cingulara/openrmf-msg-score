@@ -18,7 +18,7 @@ namespace openstig_msg_score
         {
             LogManager.Configuration = new XmlLoggingConfiguration($"{AppContext.BaseDirectory}nlog.config");
 
-            var logger = LogManager.GetLogger("openstig-msg-score");
+            var logger = LogManager.GetLogger("openrmf-msg-score");
             //logger.Info("log info");
             //logger.Debug("log debug");
 

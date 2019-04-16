@@ -1,10 +1,10 @@
-VERSION ?= 0.6
-NAME ?= "openstig-msg-score"
+VERSION ?= 0.7
+NAME ?= "openrmf-msg-score"
 AUTHOR ?= "Dale Bingham"
 NO_CACHE ?= true
 DOCKERHUB_ACCOUNT ?= cingulara
   
-.PHONY: build run stop clean version dockerhub
+.PHONY: build docker latest clean version dockerhub
 
 build:
 	dotnet build
@@ -12,12 +12,13 @@ build:
 docker:
 	docker build -f Dockerfile . -t $(NAME)\:$(VERSION) --no-cache=$(NO_CACHE)  
 
-run:  
-	docker run --rm --name $(NAME) -d $(NAME)\:$(VERSION) && docker ps -a --format "{{.ID}}\t{{.Names}}"|grep $(NAME)
-
-stop:  
-	docker rm -f $(NAME)
-  
+latest: 
+	docker build -f Dockerfile -t $(NAME)\:latest --no-cache=$(NO_CACHE) .
+	docker login -u ${DOCKERHUB_ACCOUNT}
+	docker tag $(NAME)\:latest ${DOCKERHUB_ACCOUNT}\/$(NAME)\:latest
+	docker push ${DOCKERHUB_ACCOUNT}\/$(NAME)\:latest
+	docker logout
+ 
 clean:
 	@rm -f -r obj
 	@rm -f -r bin

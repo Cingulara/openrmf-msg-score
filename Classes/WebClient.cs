@@ -20,7 +20,7 @@ namespace openstig_msg_score.Classes
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/xml");
-                    string hosturl = Environment.GetEnvironmentVariable("openstig-api-read-server");
+                    string hosturl = Environment.GetEnvironmentVariable("openrmf-api-read-server");
                     Console.WriteLine("URL: {0}", hosturl + "/" + artifactId);
                     HttpResponseMessage response = await client.GetAsync(hosturl + "/" + artifactId);
                     response.EnsureSuccessStatusCode();
