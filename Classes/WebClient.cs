@@ -2,11 +2,11 @@ using System;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using openstig_msg_score.Models;
+using openrmf_msg_score.Models;
 using System.Xml.Serialization;
 using System.IO;
 
-namespace openstig_msg_score.Classes
+namespace openrmf_msg_score.Classes
 {
     public static class WebClient 
     {

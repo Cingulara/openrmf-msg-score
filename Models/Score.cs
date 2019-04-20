@@ -1,9 +1,9 @@
 using System;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using openstig_msg_score.Data;
+using openrmf_msg_score.Data;
 
-namespace openstig_msg_score.Models
+namespace openrmf_msg_score.Models
 {
     public class Score
     {

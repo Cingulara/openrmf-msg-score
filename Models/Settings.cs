@@ -1,4 +1,4 @@
-namespace openstig_msg_score.Models
+namespace openrmf_msg_score.Models
 {
     public class Settings
     {

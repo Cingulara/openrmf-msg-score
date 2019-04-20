@@ -1,7 +1,7 @@
 using MongoDB.Driver;
-using openstig_msg_score.Models;
+using openrmf_msg_score.Models;
 
-namespace openstig_msg_score.Data
+namespace openrmf_msg_score.Data
 {
     public class ScoreContext
     {

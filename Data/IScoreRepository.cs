@@ -1,9 +1,9 @@
-using openstig_msg_score.Models;
+using openrmf_msg_score.Models;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
 
-namespace openstig_msg_score.Data {
+namespace openrmf_msg_score.Data {
     public interface IScoreRepository
     {
         Task<IEnumerable<Score>> GetAllScores();

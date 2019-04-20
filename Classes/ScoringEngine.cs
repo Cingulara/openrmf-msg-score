@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using openstig_msg_score.Models;
+using openrmf_msg_score.Models;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace openstig_msg_score.Classes
+namespace openrmf_msg_score.Classes
 {
     public static class ScoringEngine 
     {

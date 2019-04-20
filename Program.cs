@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using NLog;
 using NLog.Config;
-using openstig_msg_score.Models;
-using openstig_msg_score.Classes;
+using openrmf_msg_score.Models;
+using openrmf_msg_score.Classes;
 
 using MongoDB.Bson;
 
-namespace openstig_msg_score
+namespace openrmf_msg_score
 {
     class Program
     {
@@ -84,11 +84,11 @@ namespace openstig_msg_score
             // The simple way to create an asynchronous subscriber
             // is to simply pass the event in.  Messages will start
             // arriving immediately.
-            logger.Info("setting up the openSTIG save new subscriptions");
-            IAsyncSubscription asyncNew = c.SubscribeAsync("openstig.save.new", newChecklistScore);
-            logger.Info("setting up the openSTIG save update subscriptions");
-            IAsyncSubscription asyncUpdate = c.SubscribeAsync("openstig.save.update", updateChecklistScore);
-            logger.Info("openSTIG subscriptions set successfully!");
+            logger.Info("setting up the openRMF save new subscriptions");
+            IAsyncSubscription asyncNew = c.SubscribeAsync("openrmf.save.new", newChecklistScore);
+            logger.Info("setting up the openRMF save update subscriptions");
+            IAsyncSubscription asyncUpdate = c.SubscribeAsync("openrmf.save.update", updateChecklistScore);
+            logger.Info("openRMF subscriptions set successfully!");
         }
         private static ObjectId GetInternalId(string id)
         {

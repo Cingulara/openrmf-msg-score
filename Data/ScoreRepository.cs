@@ -1,11 +1,11 @@
-using openstig_msg_score.Models;
+using openrmf_msg_score.Models;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Bson;
 
-namespace openstig_msg_score.Data {
+namespace openrmf_msg_score.Data {
     public class ScoreRepository : IScoreRepository
     {
         private readonly ScoreContext _context = null;

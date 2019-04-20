@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace openstig_msg_score.Models
+namespace openrmf_msg_score.Models
 {
     [Serializable]
     public class Artifact
