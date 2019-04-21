@@ -47,6 +47,7 @@ namespace openrmf_msg_score
                         score.created = DateTime.Now;
                         logger.Info("Saving new score for artifactId {0}", score.artifactId.ToString());
                         score.SaveScore();
+                        logger.Info("Score successfully saved for artifactId {0}", score.artifactId.ToString());
                     }
                 }
                 catch (Exception ex) {
@@ -73,6 +74,28 @@ namespace openrmf_msg_score
                         score.updatedOn = DateTime.Now;
                         logger.Info("Saving updated score for artifactId {0}", score.artifactId.ToString());
                         score.UpdateScore();
+                        logger.Info("Score successfully updated for artifactId {0}", score.artifactId.ToString());
+                    }
+                }
+                catch (Exception ex) {
+                    // log it here
+                    logger.Error(ex, "Error saving updated scoring information for artifactId {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
+                }
+            };
+
+            EventHandler<MsgHandlerEventArgs> deleteChecklistScore = (sender, natsargs) =>
+            {
+                try {
+                    // print the message
+                    Console.WriteLine(natsargs.Message.Subject);
+                    Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
+                    Artifact checklist = WebClient.GetChecklistAsync(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
+                    if (checklist != null && checklist.CHECKLIST != null) {
+                        Score score = new Score();
+                        score.InternalId = GetInternalId(Encoding.UTF8.GetString(natsargs.Message.Data));
+                        logger.Info("Deleting score for artifactId {0}", score.artifactId.ToString());
+                        score.RemoveScore();
+                        logger.Info("Score deleted successfully for artifactId {0}", score.artifactId.ToString());
                     }
                 }
                 catch (Exception ex) {
@@ -84,10 +107,12 @@ namespace openrmf_msg_score
             // The simple way to create an asynchronous subscriber
             // is to simply pass the event in.  Messages will start
             // arriving immediately.
-            logger.Info("setting up the openRMF save new subscriptions");
+            logger.Info("setting up the openRMF new score subscriptions");
             IAsyncSubscription asyncNew = c.SubscribeAsync("openrmf.save.new", newChecklistScore);
-            logger.Info("setting up the openRMF save update subscriptions");
+            logger.Info("setting up the openRMF update score subscriptions");
             IAsyncSubscription asyncUpdate = c.SubscribeAsync("openrmf.save.update", updateChecklistScore);
+            logger.Info("setting up the openRMF delete score subscriptions");
+            IAsyncSubscription asyncDelete = c.SubscribeAsync("openrmf.delete", deleteChecklistScore);
             logger.Info("openRMF subscriptions set successfully!");
         }
         private static ObjectId GetInternalId(string id)

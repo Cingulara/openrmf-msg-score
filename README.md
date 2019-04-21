@@ -15,7 +15,8 @@ Messaging service to process new saves and updates of checklists for scoring. Th
 * The C# NATS client library available at https://github.com/nats-io/csharp-nats
 
 ## Making your local Docker image
-docker build --rm -t openstig-msg-score:0.1 .
+* make build
+* make latest
 
 ## creating the database user
 * ~/mongodb/bin/mongo 'mongodb://root:myp2ssw0rd@localhost'

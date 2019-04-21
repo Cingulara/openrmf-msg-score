@@ -85,7 +85,7 @@ namespace openrmf_msg_score.Data {
             }
         }
 
-        public async Task<bool> RemoveScore(string id)
+        public async Task<bool> RemoveScore(ObjectId id)
         {
             try
             {

@@ -81,5 +81,21 @@ namespace openrmf_msg_score.Models
                 throw ex;
             }
         }
+
+        public async void RemoveScore () {
+            try {
+                Settings s = new Settings();
+                s.ConnectionString = Environment.GetEnvironmentVariable("mongoConnection");
+                s.Database = Environment.GetEnvironmentVariable("mongodb");
+
+                ScoreRepository _scoreRepo = new ScoreRepository(s);
+                await _scoreRepo.RemoveScore(this.InternalId);
+            }
+            catch (Exception ex) {
+                Console.WriteLine(string.Format("Error Removing Score for {0}. {1}", this.InternalId.ToString(), ex.Message));
+                throw ex;
+            }
+        }
+
     }
 }

@@ -2,6 +2,7 @@ using openrmf_msg_score.Models;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 
 namespace openrmf_msg_score.Data {
     public interface IScoreRepository
@@ -16,7 +17,7 @@ namespace openrmf_msg_score.Data {
         Task<Score> AddScore(Score item);
 
         // remove a single document
-        Task<bool> RemoveScore(string id);
+        Task<bool> RemoveScore(ObjectId id);
 
         // update just a single document
         Task<bool> UpdateScore(Score body);
