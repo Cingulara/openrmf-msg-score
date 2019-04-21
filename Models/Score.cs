@@ -89,10 +89,10 @@ namespace openrmf_msg_score.Models
                 s.Database = Environment.GetEnvironmentVariable("mongodb");
 
                 ScoreRepository _scoreRepo = new ScoreRepository(s);
-                await _scoreRepo.RemoveScore(this.InternalId);
+                await _scoreRepo.RemoveScore(this.artifactId);
             }
             catch (Exception ex) {
-                Console.WriteLine(string.Format("Error Removing Score for {0}. {1}", this.InternalId.ToString(), ex.Message));
+                Console.WriteLine(string.Format("Error Removing Score for {0}. {1}", this.artifactId.ToString(), ex.Message));
                 throw ex;
             }
         }

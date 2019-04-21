@@ -89,12 +89,8 @@ namespace openrmf_msg_score.Data {
         {
             try
             {
-                DeleteResult actionResult 
-                    = await _context.Scores.DeleteOneAsync(
-                        Builders<Score>.Filter.Eq("Id", id));
-
-                return actionResult.IsAcknowledged 
-                    && actionResult.DeletedCount > 0;
+                DeleteResult actionResult = await _context.Scores.DeleteOneAsync(Builders<Score>.Filter.Eq("artifactId", id));
+                return actionResult.IsAcknowledged && actionResult.DeletedCount > 0;
             }
             catch (Exception ex)
             {
@@ -102,7 +98,6 @@ namespace openrmf_msg_score.Data {
                 throw ex;
             }
         }
-
 
         private async Task<Score> GetScoreByArtifact(ObjectId artifactId)
         {

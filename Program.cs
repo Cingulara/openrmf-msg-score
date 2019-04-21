@@ -89,18 +89,15 @@ namespace openrmf_msg_score
                     // print the message
                     Console.WriteLine(natsargs.Message.Subject);
                     Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
-                    Artifact checklist = WebClient.GetChecklistAsync(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
-                    if (checklist != null && checklist.CHECKLIST != null) {
-                        Score score = new Score();
-                        score.InternalId = GetInternalId(Encoding.UTF8.GetString(natsargs.Message.Data));
-                        logger.Info("Deleting score for artifactId {0}", score.artifactId.ToString());
-                        score.RemoveScore();
-                        logger.Info("Score deleted successfully for artifactId {0}", score.artifactId.ToString());
-                    }
+                    Score score = new Score();
+                    score.artifactId = GetInternalId(Encoding.UTF8.GetString(natsargs.Message.Data));
+                    logger.Info("Deleting score for artifactId {0}", score.artifactId.ToString());
+                    score.RemoveScore();
+                    logger.Info("Score deleted successfully for artifactId {0}", score.artifactId.ToString());
                 }
                 catch (Exception ex) {
                     // log it here
-                    logger.Error(ex, "Error saving updated scoring information for artifactId {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
+                    logger.Error(ex, "Error deleting scoring information for artifactId {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
                 }
             };
 
