@@ -50,6 +50,10 @@ namespace openrmf_msg_score.Models
         public int totalNotApplicable { get { return totalCat1NotApplicable + totalCat2NotApplicable + totalCat3NotApplicable;} }
         public int totalNotAFinding { get { return totalCat1NotAFinding + totalCat2NotAFinding + totalCat3NotAFinding;} }
         public int totalNotReviewed { get { return totalCat1NotReviewed + totalCat2NotReviewed + totalCat3NotReviewed;} }
+        public int totalCat1 { get { return totalCat1NotAFinding + totalCat1NotApplicable + totalCat1NotReviewed + totalCat1Open;} }
+        public int totalCat2 { get { return totalCat2NotAFinding + totalCat2NotApplicable + totalCat2NotReviewed + totalCat2Open;} }
+        public int totalCat3 { get { return totalCat3NotAFinding + totalCat2NotApplicable + totalCat3NotReviewed + totalCat3Open;} }
+
         #endregion
 
         public async void SaveScore () {
