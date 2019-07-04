@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace openstig_msg_score.Models
+namespace openrmf_msg_score.Models
 {
 
     public class iSTIG {
