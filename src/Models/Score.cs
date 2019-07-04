@@ -1,9 +1,9 @@
 using System;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using openstig_msg_score.Data;
+using openrmf_msg_score.Data;
 
-namespace openstig_msg_score.Models
+namespace openrmf_msg_score.Models
 {
     public class Score
     {
@@ -50,6 +50,10 @@ namespace openstig_msg_score.Models
         public int totalNotApplicable { get { return totalCat1NotApplicable + totalCat2NotApplicable + totalCat3NotApplicable;} }
         public int totalNotAFinding { get { return totalCat1NotAFinding + totalCat2NotAFinding + totalCat3NotAFinding;} }
         public int totalNotReviewed { get { return totalCat1NotReviewed + totalCat2NotReviewed + totalCat3NotReviewed;} }
+        public int totalCat1 { get { return totalCat1NotAFinding + totalCat1NotApplicable + totalCat1NotReviewed + totalCat1Open;} }
+        public int totalCat2 { get { return totalCat2NotAFinding + totalCat2NotApplicable + totalCat2NotReviewed + totalCat2Open;} }
+        public int totalCat3 { get { return totalCat3NotAFinding + totalCat2NotApplicable + totalCat3NotReviewed + totalCat3Open;} }
+
         #endregion
 
         public async void SaveScore () {
@@ -81,5 +85,21 @@ namespace openstig_msg_score.Models
                 throw ex;
             }
         }
+
+        public async void RemoveScore () {
+            try {
+                Settings s = new Settings();
+                s.ConnectionString = Environment.GetEnvironmentVariable("mongoConnection");
+                s.Database = Environment.GetEnvironmentVariable("mongodb");
+
+                ScoreRepository _scoreRepo = new ScoreRepository(s);
+                await _scoreRepo.RemoveScore(this.artifactId);
+            }
+            catch (Exception ex) {
+                Console.WriteLine(string.Format("Error Removing Score for {0}. {1}", this.artifactId.ToString(), ex.Message));
+                throw ex;
+            }
+        }
+
     }
 }

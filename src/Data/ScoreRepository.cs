@@ -1,11 +1,11 @@
-using openstig_msg_score.Models;
+using openrmf_msg_score.Models;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Bson;
 
-namespace openstig_msg_score.Data {
+namespace openrmf_msg_score.Data {
     public class ScoreRepository : IScoreRepository
     {
         private readonly ScoreContext _context = null;
@@ -85,16 +85,12 @@ namespace openstig_msg_score.Data {
             }
         }
 
-        public async Task<bool> RemoveScore(string id)
+        public async Task<bool> RemoveScore(ObjectId id)
         {
             try
             {
-                DeleteResult actionResult 
-                    = await _context.Scores.DeleteOneAsync(
-                        Builders<Score>.Filter.Eq("Id", id));
-
-                return actionResult.IsAcknowledged 
-                    && actionResult.DeletedCount > 0;
+                DeleteResult actionResult = await _context.Scores.DeleteOneAsync(Builders<Score>.Filter.Eq("artifactId", id));
+                return actionResult.IsAcknowledged && actionResult.DeletedCount > 0;
             }
             catch (Exception ex)
             {
@@ -102,7 +98,6 @@ namespace openstig_msg_score.Data {
                 throw ex;
             }
         }
-
 
         private async Task<Score> GetScoreByArtifact(ObjectId artifactId)
         {

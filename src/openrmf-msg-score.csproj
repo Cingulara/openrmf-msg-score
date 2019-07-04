@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <RootNamespace>openstig_msg_score</RootNamespace>
-    <Version>0.6</Version>
-    <InformationalVersion>This is a beta of the openSTIG Tool Messaging API for scoring checklists from Cingulara</InformationalVersion>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RootNamespace>openrmf_msg_score</RootNamespace>
+    <Version>0.7</Version>
+    <InformationalVersion>This is a beta of the openRMF Tool Messaging API for scoring checklists from Cingulara</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
