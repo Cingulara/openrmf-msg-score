@@ -4,8 +4,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>openrmf_msg_score</RootNamespace>
-    <Version>0.7</Version>
-    <InformationalVersion>This is a beta of the openRMF Tool Messaging API for scoring checklists from Cingulara</InformationalVersion>
+    <Version>0.8</Version>
+    <InformationalVersion>This is a beta of the OpenRMF Tool Messaging API for scoring checklists from Cingulara</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
