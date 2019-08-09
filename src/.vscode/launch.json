@@ -1,7 +1,4 @@
 {
-   // Use IntelliSense to find out which attributes exist for C# debugging
-   // Use hover for the description of the existing attributes
-   // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
    "version": "0.2.0",
    "configurations": [
         {
@@ -9,11 +6,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/bin/Debug/netcoreapp2.2/openrmf-msg-score.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
-            // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
@@ -21,7 +16,10 @@
                 "openrmf-api-read-server" : "http://localhost:8084",
                 "mongoConnection": "mongodb://openrmfscore:openrmf1234!@localhost/openrmfscore?authSource=admin",
                 "mongodb": "openrmfscore",
-                "natsserverurl": "nats://127.0.0.1:4222"
+                "natsserverurl": "nats://127.0.0.1:4222",
+                "JWT-AUTHORITY" : "http://192.168.11.39:9001/auth/realms/openrmf",
+                "JWT-CLIENT": "openrmfapi",
+                "JWT-SECRET": "42f10f2a-3a67-43cf-8e92-82969039a5cc"
             },
         },
         {
