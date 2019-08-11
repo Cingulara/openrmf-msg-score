@@ -13,6 +13,9 @@ namespace openrmf_msg_score.Data {
         // query after multiple parameters
         Task<IEnumerable<Score>> GetScore(string bodyText, DateTime updatedFrom, long headerSizeLimit);
 
+        // send back the score based on the checklist artifact Id
+        Task<Score> GetScorebyArtifact(string artifactId);
+
         // add new note document
         Task<Score> AddScore(Score item);
 
