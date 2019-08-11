@@ -137,14 +137,14 @@ namespace openrmf_msg_score
             // is to simply pass the event in.  Messages will start
             // arriving immediately.
             logger.Info("setting up the openRMF new score subscriptions");
-            IAsyncSubscription asyncNew = c.SubscribeAsync("openrmf.save.new", newChecklistScore);
+            IAsyncSubscription asyncNew = c.SubscribeAsync("openrmf.checklist.save.new", newChecklistScore);
             logger.Info("setting up the openRMF update score subscriptions");
-            IAsyncSubscription asyncUpdate = c.SubscribeAsync("openrmf.save.update", updateChecklistScore);
+            IAsyncSubscription asyncUpdate = c.SubscribeAsync("openrmf.checklist.save.update", updateChecklistScore);
             logger.Info("setting up the openRMF delete score subscriptions");
-            IAsyncSubscription asyncDelete = c.SubscribeAsync("openrmf.delete", deleteChecklistScore);
+            IAsyncSubscription asyncDelete = c.SubscribeAsync("openrmf.checklist.delete", deleteChecklistScore);
             logger.Info("openRMF subscriptions set successfully!");
             logger.Info("setting up the openRMF score read subscription");
-            IAsyncSubscription asyncRead = c.SubscribeAsync("openrmf.checklist.read", readChecklistScore);
+            IAsyncSubscription asyncRead = c.SubscribeAsync("openrmf.score.read", readChecklistScore);
         }
 
         // make the string an internal ID for MongoDB
@@ -159,7 +159,7 @@ namespace openrmf_msg_score
         private static Artifact GetChecklist(IConnection conn, string id){
             try {
                 Artifact art = new Artifact();
-                Msg reply = conn.Request("openrmf.checklist.read", Encoding.UTF8.GetBytes(id), 30000); // publish to get this Artifact checklist back via ID
+                Msg reply = conn.Request("openrmf.checklist.read", Encoding.UTF8.GetBytes(id), 3000); // publish to get this Artifact checklist back via ID
                 // save the reply and get back the checklist to score
                 if (reply != null) {
                     art = JsonConvert.DeserializeObject<Artifact>(Compression.DecompressString(Encoding.UTF8.GetString(reply.Data)));
