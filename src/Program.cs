@@ -24,7 +24,7 @@ namespace openrmf_msg_score
             ConnectionFactory cf = new ConnectionFactory();
 
             // Creates a live connection to the default NATS Server running locally
-            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("natsserverurl"));
+            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("NATSSERVERURL"));
 
             // Setup an event handler to process incoming messages.
             // An anonymous delegate function is used for brevity.
@@ -107,8 +107,8 @@ namespace openrmf_msg_score
                     if (!string.IsNullOrEmpty(Encoding.UTF8.GetString(natsargs.Message.Data))) {
                         Score score = new Score();
                         Settings s = new Settings();
-                        s.ConnectionString = Environment.GetEnvironmentVariable("mongoConnection");
-                        s.Database = Environment.GetEnvironmentVariable("mongodb");
+                        s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
+                        s.Database = Environment.GetEnvironmentVariable("MONGODB");
                         ScoreRepository _scoreRepo = new ScoreRepository(s);
                         logger.Info("Retrieving Score for artifactId {0}", score.artifactId.ToString());
                         score = _scoreRepo.GetScorebyArtifact(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();

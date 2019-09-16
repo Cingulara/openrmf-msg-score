@@ -13,10 +13,9 @@
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
             "env": {
-                "openrmf-api-read-server" : "http://localhost:8084",
-                "mongoConnection": "mongodb://openrmfscore:openrmf1234!@localhost/openrmfscore?authSource=admin",
-                "mongodb": "openrmfscore",
-                "natsserverurl": "nats://127.0.0.1:4222"
+                "MONGODBCONNECTION": "mongodb://openrmfscore:openrmf1234!@localhost/openrmfscore?authSource=admin",
+                "MONGODB": "openrmfscore",
+                "NATSSERVERURL": "nats://127.0.0.1:4222"
             },
         },
         {
