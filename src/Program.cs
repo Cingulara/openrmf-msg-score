@@ -168,7 +168,8 @@ namespace openrmf_msg_score
                 return art;
             }
             catch (Exception ex) {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(string.Format("openrmf-msg-score Error in GetChecklist with Artifact id {0}. Message: {1}",
+                    id, ex.Message));
                 throw ex;
             }
         }
