@@ -53,6 +53,20 @@ namespace openrmf_msg_score.Data {
             }
         }
 
+        // query after artifactId
+        public async Task<Score> GetScorebyArtifact(string artifactId)
+        {
+            try
+            {
+                return await _context.Scores.Find(Score => Score.artifactId == GetInternalId(artifactId)).FirstOrDefaultAsync();
+             }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+            }
+        }
+        
         // query after body text, updated time, and header image size
         //
         public async Task<IEnumerable<Score>> GetScore(string bodyText, DateTime updatedFrom, long headerSizeLimit)

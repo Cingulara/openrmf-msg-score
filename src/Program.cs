@@ -1,12 +1,12 @@
 ﻿using System;
 using NATS.Client;
 using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http;
 using NLog;
 using NLog.Config;
 using openrmf_msg_score.Models;
 using openrmf_msg_score.Classes;
+using openrmf_msg_score.Data;
+using Newtonsoft.Json;
 
 using MongoDB.Bson;
 
@@ -19,14 +19,12 @@ namespace openrmf_msg_score
             LogManager.Configuration = new XmlLoggingConfiguration($"{AppContext.BaseDirectory}nlog.config");
 
             var logger = LogManager.GetLogger("openrmf-msg-score");
-            //logger.Info("log info");
-            //logger.Debug("log debug");
 
             // Create a new connection factory to create a connection.
             ConnectionFactory cf = new ConnectionFactory();
 
             // Creates a live connection to the default NATS Server running locally
-            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("natsserverurl"));
+            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("NATSSERVERURL"));
 
             // Setup an event handler to process incoming messages.
             // An anonymous delegate function is used for brevity.
@@ -36,9 +34,9 @@ namespace openrmf_msg_score
                     // print the message
                     logger.Info("New NATS subject: {0}", natsargs.Message.Subject);
                     logger.Info("New NATS data: {0}",Encoding.UTF8.GetString(natsargs.Message.Data));
-                    Artifact checklist = WebClient.GetChecklistAsync(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
+                    Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
                     if (checklist != null && checklist.CHECKLIST != null) {
-                        Score score = ScoringEngine.ScoreChecklist(checklist.CHECKLIST);
+                        Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);
                         score.system = checklist.system;
                         score.stigType = checklist.stigType;
                         score.stigRelease = checklist.stigRelease;
@@ -62,9 +60,9 @@ namespace openrmf_msg_score
                     // print the message
                     Console.WriteLine(natsargs.Message.Subject);
                     Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
-                    Artifact checklist = WebClient.GetChecklistAsync(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
+                    Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
                     if (checklist != null && checklist.CHECKLIST != null) {
-                        Score score = ScoringEngine.ScoreChecklist(checklist.CHECKLIST);   
+                        Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);   
                         score.system = checklist.system;
                         score.stigType = checklist.stigType;
                         score.stigRelease = checklist.stigRelease;
@@ -87,8 +85,8 @@ namespace openrmf_msg_score
             {
                 try {
                     // print the message
-                    Console.WriteLine(natsargs.Message.Subject);
-                    Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
+                    logger.Info(natsargs.Message.Subject);
+                    logger.Info(Encoding.UTF8.GetString(natsargs.Message.Data));
                     Score score = new Score();
                     score.artifactId = GetInternalId(Encoding.UTF8.GetString(natsargs.Message.Data));
                     logger.Info("Deleting score for artifactId {0}", score.artifactId.ToString());
@@ -101,17 +99,55 @@ namespace openrmf_msg_score
                 }
             };
 
+            EventHandler<MsgHandlerEventArgs> readChecklistScore = (sender, natsargs) =>
+            {
+                try {
+                    logger.Info("OpenRMF Score Client: {0}", natsargs.Message.Subject);
+                    logger.Info("Score for Artifact: {0}",Encoding.UTF8.GetString(natsargs.Message.Data));
+                    if (!string.IsNullOrEmpty(Encoding.UTF8.GetString(natsargs.Message.Data))) {
+                        Score score = new Score();
+                        Settings s = new Settings();
+                        s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
+                        s.Database = Environment.GetEnvironmentVariable("MONGODB");
+                        ScoreRepository _scoreRepo = new ScoreRepository(s);
+                        logger.Info("Retrieving Score for artifactId {0}", score.artifactId.ToString());
+                        score = _scoreRepo.GetScorebyArtifact(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
+                        string msg = "";
+                        if (score != null) {
+                            // put into a JSON string
+                            msg = JsonConvert.SerializeObject(score);
+                        } 
+                        else {
+                            msg = JsonConvert.SerializeObject(new Score());
+                        }
+                        // send the reply back to the calling request
+                        c.Publish(natsargs.Message.Reply, Encoding.UTF8.GetBytes(Compression.CompressString(msg)));
+                        // flush the line
+                        c.Flush();
+                        logger.Info("Score successfully sent back for artifactId {0}", score.artifactId.ToString());
+                    }
+                }
+                catch (Exception ex) {
+                    // log it here
+                    logger.Error(ex, "Error reading scoring information for artifactId {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
+                }
+            };
+
             // The simple way to create an asynchronous subscriber
             // is to simply pass the event in.  Messages will start
             // arriving immediately.
             logger.Info("setting up the openRMF new score subscriptions");
-            IAsyncSubscription asyncNew = c.SubscribeAsync("openrmf.save.new", newChecklistScore);
+            IAsyncSubscription asyncNew = c.SubscribeAsync("openrmf.checklist.save.new", newChecklistScore);
             logger.Info("setting up the openRMF update score subscriptions");
-            IAsyncSubscription asyncUpdate = c.SubscribeAsync("openrmf.save.update", updateChecklistScore);
+            IAsyncSubscription asyncUpdate = c.SubscribeAsync("openrmf.checklist.save.update", updateChecklistScore);
             logger.Info("setting up the openRMF delete score subscriptions");
-            IAsyncSubscription asyncDelete = c.SubscribeAsync("openrmf.delete", deleteChecklistScore);
+            IAsyncSubscription asyncDelete = c.SubscribeAsync("openrmf.checklist.delete", deleteChecklistScore);
             logger.Info("openRMF subscriptions set successfully!");
+            logger.Info("setting up the openRMF score read subscription");
+            IAsyncSubscription asyncRead = c.SubscribeAsync("openrmf.score.read", readChecklistScore);
         }
+
+        // make the string an internal ID for MongoDB
         private static ObjectId GetInternalId(string id)
         {
             ObjectId internalId;
@@ -119,5 +155,24 @@ namespace openrmf_msg_score
                 internalId = ObjectId.Empty;
             return internalId;
         }
+
+        private static Artifact GetChecklist(IConnection conn, string id){
+            try {
+                Artifact art = new Artifact();
+                Msg reply = conn.Request("openrmf.checklist.read", Encoding.UTF8.GetBytes(id), 3000); // publish to get this Artifact checklist back via ID
+                // save the reply and get back the checklist to score
+                if (reply != null) {
+                    art = JsonConvert.DeserializeObject<Artifact>(Compression.DecompressString(Encoding.UTF8.GetString(reply.Data)));
+                    return art;
+                }
+                return art;
+            }
+            catch (Exception ex) {
+                Console.WriteLine(string.Format("openrmf-msg-score Error in GetChecklist with Artifact id {0}. Message: {1}",
+                    id, ex.Message));
+                throw ex;
+            }
+        }
+
     }
 }
