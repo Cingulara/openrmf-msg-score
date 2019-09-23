@@ -59,8 +59,8 @@ namespace openrmf_msg_score.Models
         public async void SaveScore () {
             try {
                 Settings s = new Settings();
-                s.ConnectionString = Environment.GetEnvironmentVariable("mongoConnection");
-                s.Database = Environment.GetEnvironmentVariable("mongodb");
+                s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
+                s.Database = Environment.GetEnvironmentVariable("MONGODB");
 
                 ScoreRepository _scoreRepo = new ScoreRepository(s);
                 await _scoreRepo.AddScore(this);
@@ -74,8 +74,8 @@ namespace openrmf_msg_score.Models
         public async void UpdateScore () {
             try {
                 Settings s = new Settings();
-                s.ConnectionString = Environment.GetEnvironmentVariable("mongoConnection");
-                s.Database = Environment.GetEnvironmentVariable("mongodb");
+                s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
+                s.Database = Environment.GetEnvironmentVariable("MONGODB");
 
                 ScoreRepository _scoreRepo = new ScoreRepository(s);
                 await _scoreRepo.UpdateScore(this);
@@ -89,8 +89,8 @@ namespace openrmf_msg_score.Models
         public async void RemoveScore () {
             try {
                 Settings s = new Settings();
-                s.ConnectionString = Environment.GetEnvironmentVariable("mongoConnection");
-                s.Database = Environment.GetEnvironmentVariable("mongodb");
+                s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
+                s.Database = Environment.GetEnvironmentVariable("MONGODB");
 
                 ScoreRepository _scoreRepo = new ScoreRepository(s);
                 await _scoreRepo.RemoveScore(this.artifactId);
