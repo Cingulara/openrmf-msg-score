@@ -5,6 +5,7 @@ using System.Xml.Serialization;
 namespace openrmf_msg_score.Models
 {
 
+    // this matches the VULN XML sections in the Checklist CKL file
     public class VULN {
 
         public VULN (){

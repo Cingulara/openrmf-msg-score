@@ -4,7 +4,8 @@ using System.Collections.Generic;
 namespace openrmf_msg_score.Models
 {
 
-    public class ASSET {
+    // this matches the ASSET XML section in the Checklist CKL file
+	public class ASSET {
 
         public ASSET (){
 
