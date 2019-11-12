@@ -11,7 +11,7 @@ namespace openrmf_msg_score.Classes
         /// Decompresses the string.
         /// </summary>
         /// <param name="compressedText">The compressed text.</param>
-        /// <returns></returns>
+        /// <returns>The original string that was compressed</returns>
         public static string DecompressString(string compressedText)
         {
             byte[] gZipBuffer = Convert.FromBase64String(compressedText);
@@ -36,7 +36,7 @@ namespace openrmf_msg_score.Classes
         /// Compresses the string.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns></returns>
+        /// <returns>A compressed string from the string passed in</returns>
         public static string CompressString(string text)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(text);

@@ -26,8 +26,8 @@ namespace openrmf_msg_score
             // Creates a live connection to the default NATS Server running locally
             IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("NATSSERVERURL"));
 
-            // Setup an event handler to process incoming messages.
-            // An anonymous delegate function is used for brevity.
+            // Setup a new Score record based on a new checklist uploaded
+            // This is called from the Upload API to say "hey I have a new checklist, score it"
             EventHandler<MsgHandlerEventArgs> newChecklistScore = (sender, natsargs) =>
             {
                 try {
@@ -54,6 +54,8 @@ namespace openrmf_msg_score
                 }
             };
 
+            // Setup an updated Score record based on an updated checklist uploaded
+            // This is called from the Upload API to say "hey I have an updated checklist, you may want to update your scoring"
             EventHandler<MsgHandlerEventArgs> updateChecklistScore = (sender, natsargs) =>
             {
                 try {
@@ -81,6 +83,8 @@ namespace openrmf_msg_score
                 }
             };
 
+            // Delete the score record and clean up the data
+            // This is called from the Save API to say "hey I just deleted a checklist, clean up the scoring record"
             EventHandler<MsgHandlerEventArgs> deleteChecklistScore = (sender, natsargs) =>
             {
                 try {
@@ -99,6 +103,8 @@ namespace openrmf_msg_score
                 }
             };
 
+            // Respond to a request to read the score
+            // Called from the Read API when someone downloads a system checklist listing with the scores in it
             EventHandler<MsgHandlerEventArgs> readChecklistScore = (sender, natsargs) =>
             {
                 try {
@@ -147,7 +153,11 @@ namespace openrmf_msg_score
             IAsyncSubscription asyncRead = c.SubscribeAsync("openrmf.score.read", readChecklistScore);
         }
 
-        // make the string an internal ID for MongoDB
+        /// <summary>
+        /// Turn the string ID into the ObjectId of a database key record
+        /// </summary>
+        /// <param name="id">The string id for the database to turn into an object for use</param>
+        /// <returns>An objectID for the string ID to use in the database</returns>
         private static ObjectId GetInternalId(string id)
         {
             ObjectId internalId;
@@ -156,6 +166,13 @@ namespace openrmf_msg_score
             return internalId;
         }
 
+        /// <summary>
+        /// Return a checklist record based on the ID requested. Uses a request/reply 
+        /// method to get a checklist and then score it.
+        /// </summary>
+        /// <param name="conn">The database connection</param>
+        /// <param name="id">The id of the checklist record to return</param>
+        /// <returns>A checklist record, if found</returns>
         private static Artifact GetChecklist(IConnection conn, string id){
             try {
                 Artifact art = new Artifact();

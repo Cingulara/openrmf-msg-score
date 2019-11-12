@@ -5,6 +5,9 @@ using openrmf_msg_score.Data;
 
 namespace openrmf_msg_score.Models
 {
+    // this is the main record for this project
+    // it records the INT of all counts for the types of 
+    // status and category for vulnerabilities in a checklist
     public class Score
     {
 
