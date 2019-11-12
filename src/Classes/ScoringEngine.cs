@@ -8,9 +8,25 @@ namespace openrmf_msg_score.Classes
 {
     public static class ScoringEngine 
     {
-        public static Score  ScoreChecklistString(string rawChecklist) {
+        /// <summary>
+        /// Return a score of all status items and categories of vulnerabilities based 
+        /// on the raw checklist passed in. This routine takes the raw checklist, makes it 
+        /// a real CHECKLIST object, then calls the below ScoreChecklist() function.
+        /// </summary>
+        /// <param name="rawChecklist">The raw XML string from the checklist CKL file</param>
+        /// <returns>A Score record showing the data from the XML checklist passed in</returns>
+        public static Score ScoreChecklistString(string rawChecklist) {
           return ScoreChecklist(ChecklistLoader.LoadChecklist(rawChecklist));
         }
+
+        /// <summary>
+        /// Return a score of all status items and categories of vulnerabilities based 
+        /// on the CHECKLIST object. This routine takes in the C# class and ises Linq to 
+        /// do a count on records to find them based on severity (high, medium, low) and 
+        /// the status.
+        /// </summary>
+        /// <param name="xml">The XML of a checklist in C# class object structure</param>
+        /// <returns>A Score record showing the data from the XML checklist object passed in</returns>
         public static Score ScoreChecklist (CHECKLIST xml)
         {
             try {

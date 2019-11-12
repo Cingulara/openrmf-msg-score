@@ -5,6 +5,7 @@ using System.Xml.Serialization;
 namespace openrmf_msg_score.Models
 {
 
+    // this matches the ISTIG XML section in the Checklist CKL file
     public class iSTIG {
 
         public iSTIG (){

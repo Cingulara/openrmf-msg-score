@@ -3,6 +3,7 @@ Messaging service to process new saves and updates of checklists for scoring. Th
 * openrmf.save.new
 * openrmf.save.update
 * openrmf.delete
+* openrmf.score.read
 
 ## Running the NATS docker images
 * docker run --rm --name nats-main -p 4222:4222 -p 6222:6222 -p 8222:8222 nats
