@@ -22,6 +22,7 @@ namespace openrmf_msg_score
 
             // Create a new connection factory to create a connection.
             ConnectionFactory cf = new ConnectionFactory();
+            // add the options for the server, reconnecting, and the handler events
             Options opts = ConnectionFactory.GetDefaultOptions();
             opts.MaxReconnect = -1;
             opts.ReconnectWait = 1000;
@@ -51,7 +52,7 @@ namespace openrmf_msg_score
                 logger.Info("Connection Disconnected: {0}", events.Conn.ConnectedUrl);
             };
             
-            // Creates a live connection to the default NATS Server running locally
+            // Creates a live connection to the NATS Server with the above options
             IConnection c = cf.CreateConnection(opts);
 
             // Setup a new Score record based on a new checklist uploaded
