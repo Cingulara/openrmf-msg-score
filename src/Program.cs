@@ -66,7 +66,7 @@ namespace openrmf_msg_score
                     Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
                     if (checklist != null && checklist.CHECKLIST != null) {
                         Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);
-                        score.system = checklist.system;
+                        score.systemGroupId = checklist.systemGroupId;
                         score.stigType = checklist.stigType;
                         score.stigRelease = checklist.stigRelease;
                         score.artifactId = GetInternalId(Encoding.UTF8.GetString(natsargs.Message.Data));
@@ -94,7 +94,7 @@ namespace openrmf_msg_score
                     Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
                     if (checklist != null && checklist.CHECKLIST != null) {
                         Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);   
-                        score.system = checklist.system;
+                        score.systemGroupId = checklist.systemGroupId;
                         score.stigType = checklist.stigType;
                         score.stigRelease = checklist.stigRelease;
                         score.created = checklist.created;
