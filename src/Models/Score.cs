@@ -26,7 +26,8 @@ namespace openrmf_msg_score.Models
         public string stigType { get; set; }
         public string stigRelease { get; set; }
         public string title { get {
-            return hostName.Trim() + "-" + stigType.Trim() + "-" + stigRelease.Trim();
+            return !string.IsNullOrEmpty(hostName)? hostName.Trim() + "-" + stigType.Trim() + "-" + stigRelease.Trim() : 
+            "UnknownHost-" + stigType.Trim() + "-" + stigRelease.Trim();
         }}
 
         [BsonDateTimeOptions]
