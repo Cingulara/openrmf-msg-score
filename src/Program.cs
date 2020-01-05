@@ -27,7 +27,7 @@ namespace openrmf_msg_score
             // add the options for the server, reconnecting, and the handler events
             Options opts = ConnectionFactory.GetDefaultOptions();
             opts.MaxReconnect = -1;
-            opts.ReconnectWait = 1000;
+            opts.ReconnectWait = 2000;
             opts.Name = "openrmf-msg-score";
             opts.Url = Environment.GetEnvironmentVariable("NATSSERVERURL");
             opts.AsyncErrorEventHandler += (sender, events) =>
@@ -208,7 +208,7 @@ namespace openrmf_msg_score
         private static Artifact GetChecklist(IConnection conn, string id){
             try {
                 Artifact art = new Artifact();
-                Msg reply = conn.Request("openrmf.checklist.read", Encoding.UTF8.GetBytes(id), 3000); // publish to get this Artifact checklist back via ID
+                Msg reply = conn.Request("openrmf.checklist.read", Encoding.UTF8.GetBytes(id), 10000); // publish to get this Artifact checklist back via ID
                 // save the reply and get back the checklist to score
                 if (reply != null) {
                     art = JsonConvert.DeserializeObject<Artifact>(Compression.DecompressString(Encoding.UTF8.GetString(reply.Data)));
