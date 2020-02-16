@@ -87,6 +87,20 @@ namespace openrmf_msg_score.Data {
             }
         }
         
+        public async Task<IEnumerable<Score>> GetSystemScores(string systemGroupId)
+        {
+            try
+            {
+                return await _context.Scores
+                    .Find(x => x.systemGroupId == systemGroupId).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+            }
+        }
+
         public async Task<Score> AddScore(Score item)
         {
             try
