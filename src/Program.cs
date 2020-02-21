@@ -68,6 +68,8 @@ namespace openrmf_msg_score
                     logger.Info("New NATS subject: {0}", natsargs.Message.Subject);
                     logger.Info("New NATS data: {0}",Encoding.UTF8.GetString(natsargs.Message.Data));
                     Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
+                    if (checklist.CHECKLIST == null)
+                        checklist.CHECKLIST = ChecklistLoader.LoadChecklist(checklist.rawChecklist);
                     if (checklist != null && checklist.CHECKLIST != null) {
                         Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);
                         score.systemGroupId = checklist.systemGroupId;
@@ -96,6 +98,8 @@ namespace openrmf_msg_score
                     Console.WriteLine(natsargs.Message.Subject);
                     Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
                     Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
+                    if (checklist.CHECKLIST == null)
+                        checklist.CHECKLIST = ChecklistLoader.LoadChecklist(checklist.rawChecklist);
                     if (checklist != null && checklist.CHECKLIST != null) {
                         Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);   
                         score.systemGroupId = checklist.systemGroupId;
@@ -207,7 +211,6 @@ namespace openrmf_msg_score
                     logger.Error(ex, "Error reading scoring information for system {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
                 }
             };
-
 
             // The simple way to create an asynchronous subscriber
             // is to simply pass the event in.  Messages will start
