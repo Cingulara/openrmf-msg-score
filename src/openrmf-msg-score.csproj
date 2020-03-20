@@ -5,12 +5,12 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>openrmf_msg_score</RootNamespace>
     <ProjectGuid>{935d6f6d-15ec-4948-8128-df1a3782a301}</ProjectGuid>
-    <Version>0.12.3</Version>
+    <Version>0.13.01</Version>
     <InformationalVersion>This is a beta of the OpenRMF Tool Messaging API for scoring checklists from Cingulara</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NATS.Client" Version="0.9.0" />
+    <PackageReference Include="NATS.Client" Version="0.10.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="mongodb.driver" Version="2.7.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.0" />
