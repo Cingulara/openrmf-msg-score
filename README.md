@@ -1,3 +1,5 @@
+![.NET Core Build and Test](https://github.com/Cingulara/openrmf-msg-score/workflows/.NET%20Core%20Build%20and%20Test/badge.svg)
+
 # openrmf-msg-score
 Messaging service to process new saves and updates of checklists for scoring. This listens for the specific subjects below and acts on them accordingly. It will save or update the scoring based on the Linq query in the classes.
 * openrmf.save.new
