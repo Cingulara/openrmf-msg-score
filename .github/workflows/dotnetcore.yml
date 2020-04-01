@@ -22,13 +22,7 @@ jobs:
         dotnet-version: '2.2.101'
     - name: Install dependencies
       run: dotnet restore src
-      with:
-        dotnet-version: '2.2.101'
     - name: Build
       run: dotnet build src --configuration Release --no-restore
-      with:
-        dotnet-version: '2.2.101'
     - name: Test
       run: dotnet test tests --verbosity normal
-      with:
-        dotnet-version: '2.2.101'
