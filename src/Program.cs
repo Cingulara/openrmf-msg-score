@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Cingulara LLC 2019 and Tutela LLC 2019. All rights reserved.
 // Licensed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 license. See LICENSE file in the project root for full license information.
 using System;
+using System.Collections.Generic;
 using NATS.Client;
 using System.Text;
 using NLog;
@@ -67,6 +68,8 @@ namespace openrmf_msg_score
                     logger.Info("New NATS subject: {0}", natsargs.Message.Subject);
                     logger.Info("New NATS data: {0}",Encoding.UTF8.GetString(natsargs.Message.Data));
                     Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
+                    if (checklist.CHECKLIST == null)
+                        checklist.CHECKLIST = ChecklistLoader.LoadChecklist(checklist.rawChecklist);
                     if (checklist != null && checklist.CHECKLIST != null) {
                         Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);
                         score.systemGroupId = checklist.systemGroupId;
@@ -95,6 +98,8 @@ namespace openrmf_msg_score
                     Console.WriteLine(natsargs.Message.Subject);
                     Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
                     Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
+                    if (checklist.CHECKLIST == null)
+                        checklist.CHECKLIST = ChecklistLoader.LoadChecklist(checklist.rawChecklist);
                     if (checklist != null && checklist.CHECKLIST != null) {
                         Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);   
                         score.systemGroupId = checklist.systemGroupId;
@@ -171,18 +176,56 @@ namespace openrmf_msg_score
                 }
             };
 
+            // Respond to a request to read the score
+            // Called from the Read API when someone downloads a system checklist listing with the scores in it
+            EventHandler<MsgHandlerEventArgs> readSystemScores = (sender, natsargs) =>
+            {
+                try {
+                    logger.Info("OpenRMF Score Client: {0}", natsargs.Message.Subject);
+                    logger.Info("Getting Scores for System: {0}",Encoding.UTF8.GetString(natsargs.Message.Data));
+                    if (!string.IsNullOrEmpty(Encoding.UTF8.GetString(natsargs.Message.Data))) {
+                        IEnumerable<Score> scores;
+                        Settings s = new Settings();
+                        s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
+                        s.Database = Environment.GetEnvironmentVariable("MONGODB");
+                        ScoreRepository _scoreRepo = new ScoreRepository(s);
+                        logger.Info("Retrieving Score for system {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
+                        scores = _scoreRepo.GetSystemScores(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
+                        string msg = "";
+                        if (scores != null) {
+                            // put into a JSON string
+                            msg = JsonConvert.SerializeObject(scores);
+                        } 
+                        else {
+                            msg = JsonConvert.SerializeObject(new List<Score>());
+                        }
+                        // send the reply back to the calling request
+                        c.Publish(natsargs.Message.Reply, Encoding.UTF8.GetBytes(Compression.CompressString(msg)));
+                        // flush the line
+                        c.Flush();
+                        logger.Info("System Score Listing successfully sent back for system {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
+                    }
+                }
+                catch (Exception ex) {
+                    // log it here
+                    logger.Error(ex, "Error reading scoring information for system {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
+                }
+            };
+
             // The simple way to create an asynchronous subscriber
             // is to simply pass the event in.  Messages will start
             // arriving immediately.
-            logger.Info("setting up the openRMF new score subscriptions");
+            logger.Info("setting up the OpenRMF new score subscriptions");
             IAsyncSubscription asyncNew = c.SubscribeAsync("openrmf.checklist.save.new", newChecklistScore);
-            logger.Info("setting up the openRMF update score subscriptions");
+            logger.Info("setting up the OpenRMF update score subscriptions");
             IAsyncSubscription asyncUpdate = c.SubscribeAsync("openrmf.checklist.save.update", updateChecklistScore);
-            logger.Info("setting up the openRMF delete score subscriptions");
+            logger.Info("setting up the OpenRMF delete score subscriptions");
             IAsyncSubscription asyncDelete = c.SubscribeAsync("openrmf.checklist.delete", deleteChecklistScore);
-            logger.Info("openRMF subscriptions set successfully!");
-            logger.Info("setting up the openRMF score read subscription");
+            logger.Info("setting up the OpenRMF score read subscription");
             IAsyncSubscription asyncRead = c.SubscribeAsync("openrmf.score.read", readChecklistScore);
+            logger.Info("setting up the OpenRMF score read subscription");
+            IAsyncSubscription asyncSystemRead = c.SubscribeAsync("openrmf.scores.system", readSystemScores);
+            logger.Info("OpenRMF subscriptions set successfully!");
         }
 
         /// <summary>

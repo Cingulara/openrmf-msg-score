@@ -18,6 +18,9 @@ namespace openrmf_msg_score.Data {
         // send back the score based on the checklist artifact Id
         Task<Score> GetScorebyArtifact(string artifactId);
 
+        // get the scores for all the checklists in a system
+        Task<IEnumerable<Score>> GetSystemScores(string systemGroupId);
+
         // add new note document
         Task<Score> AddScore(Score item);
 
