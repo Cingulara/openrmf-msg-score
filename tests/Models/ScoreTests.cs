@@ -17,18 +17,18 @@ namespace tests.Models
         public void Test_ScoreWithDataIsValid()
         {
             Score score = new Score();
-            score.system = "my system";
+            score.systemGroupId = "hgt786575647rgkjghg";
             score.hostName = "my host name";
             score.stigRelease = "V1";
             score.stigType = "Google Chrome";
             score.created = DateTime.Now;
             score.updatedOn = DateTime.Now;
-
+            score.createdBy = Guid.NewGuid();
 
             // test things out
             Assert.True(score != null);
             Assert.True (!string.IsNullOrEmpty(score.created.ToShortDateString()));
-            Assert.True (!string.IsNullOrEmpty(score.system));
+            Assert.True (!string.IsNullOrEmpty(score.systemGroupId));
             Assert.True (!string.IsNullOrEmpty(score.hostName));
             Assert.True (!string.IsNullOrEmpty(score.stigType));
             Assert.True (!string.IsNullOrEmpty(score.stigRelease));
@@ -54,18 +54,20 @@ namespace tests.Models
             Assert.True (score.totalCat1 == 0);
             Assert.True (score.totalCat2 == 0);
             Assert.True (score.totalCat3 == 0);
+            Assert.True (score.createdBy != null);
+            Assert.True (score.createdBy != Guid.Empty);
         }
 
         public void Test_ScoreWithCalculatedTotalsIsValid()
         {
             Score score = new Score();
-            score.system = "my system";
+            score.systemGroupId = "hgt786575647rgkjghg";
             score.hostName = "my host name";
             score.stigRelease = "V1";
             score.stigType = "Google Chrome";
             score.created = DateTime.Now;
             score.updatedOn = DateTime.Now;
-
+            score.createdBy = Guid.NewGuid();
 
             // test things out
             Assert.True(score != null);
@@ -88,6 +90,8 @@ namespace tests.Models
             Assert.True (score.totalCat1 == 4);
             Assert.True (score.totalCat2 == 38);
             Assert.True (score.totalCat3 == 35);
+            Assert.True (score.createdBy != null);
+            Assert.True (score.createdBy != Guid.Empty);
         }
     }
 }
