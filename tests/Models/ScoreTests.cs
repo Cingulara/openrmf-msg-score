@@ -58,6 +58,8 @@ namespace tests.Models
             Assert.True (score.createdBy != Guid.Empty);
         }
 
+
+        [Fact]
         public void Test_ScoreWithCalculatedTotalsIsValid()
         {
             Score score = new Score();
@@ -68,6 +70,19 @@ namespace tests.Models
             score.created = DateTime.Now;
             score.updatedOn = DateTime.Now;
             score.createdBy = Guid.NewGuid();
+            // set the score and check calculations
+            score.totalCat1Open = 1;
+            score.totalCat1NotApplicable = 1;
+            score.totalCat1NotAFinding = 1;
+            score.totalCat1NotReviewed = 1;
+            score.totalCat2Open = 3;
+            score.totalCat2NotApplicable = 5;
+            score.totalCat2NotAFinding = 10;
+            score.totalCat2NotReviewed = 20;
+            score.totalCat3Open = 8;
+            score.totalCat3NotApplicable = 7;
+            score.totalCat3NotAFinding = 10;
+            score.totalCat3NotReviewed = 10;
 
             // test things out
             Assert.True(score != null);
