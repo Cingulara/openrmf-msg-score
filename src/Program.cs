@@ -68,9 +68,7 @@ namespace openrmf_msg_score
                     logger.Info("New NATS subject: {0}", natsargs.Message.Subject);
                     logger.Info("New NATS data: {0}",Encoding.UTF8.GetString(natsargs.Message.Data));
                     Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
-                    if (checklist.CHECKLIST == null)
-                        checklist.CHECKLIST = ChecklistLoader.LoadChecklist(checklist.rawChecklist);
-                    if (checklist != null && checklist.CHECKLIST != null) {
+                    if (checklist != null) {
                         Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);
                         score.systemGroupId = checklist.systemGroupId;
                         score.stigType = checklist.stigType;
@@ -98,9 +96,7 @@ namespace openrmf_msg_score
                     Console.WriteLine(natsargs.Message.Subject);
                     Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
                     Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
-                    if (checklist.CHECKLIST == null)
-                        checklist.CHECKLIST = ChecklistLoader.LoadChecklist(checklist.rawChecklist);
-                    if (checklist != null && checklist.CHECKLIST != null) {
+                    if (checklist != null) {
                         Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);   
                         score.systemGroupId = checklist.systemGroupId;
                         score.stigType = checklist.stigType;
