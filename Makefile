@@ -1,7 +1,7 @@
-VERSION ?= 1.0
+VERSION ?= 1.1
 NAME ?= "openrmf-msg-score"
 AUTHOR ?= "Dale Bingham"
-NO_CACHE ?= true
+NO_CACHE ?= false
 DOCKERHUB_ACCOUNT ?= cingulara
   
 .PHONY: build docker latest clean version dockerhub
