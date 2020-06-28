@@ -116,6 +116,39 @@ namespace openrmf_msg_score
                 }
             };
 
+            // Setup an updated Score record based on an updated vulnerability record uploaded
+            // This is called from the Upload API to say "hey I have an updated checklist, you may want to update your scoring"
+            EventHandler<MsgHandlerEventArgs> updateSingleVulnerabilityScore = (sender, natsargs) =>
+            {
+                try {
+                    // print the message
+                    Console.WriteLine(natsargs.Message.Subject);
+                    Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
+                    Dictionary<string, string> vulnAttributes = JsonConvert.DeserializeObject<Dictionary<string, string>>(Compression.DecompressString(Encoding.UTF8.GetString(natsargs.Message.Data)));
+                    if (vulnAttributes != null) {
+                        Artifact checklist = GetChecklist(c, vulnAttributes["artifactId"]);
+                        if (checklist != null) {
+                            Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);   
+                            score.systemGroupId = checklist.systemGroupId;
+                            score.stigType = checklist.stigType;
+                            score.stigRelease = checklist.stigRelease;
+                            score.created = checklist.created;
+                            score.artifactId = GetInternalId(vulnAttributes["artifactId"]);
+                            score.hostName = checklist.hostName;
+                            score.updatedOn = DateTime.Now;
+                            score.updatedBy = Guid.Parse(vulnAttributes["updatedBy"]);
+                            logger.Info("Saving updated score for artifactId {0}", score.artifactId.ToString());
+                            score.UpdateScore();
+                            logger.Info("Score successfully updated for artifactId {0}", score.artifactId.ToString());
+                        }
+                    }
+                }
+                catch (Exception ex) {
+                    // log it here
+                    logger.Error(ex, "Error saving updated scoring information for artifactId {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
+                }
+            };
+
             // Delete the score record and clean up the data
             // This is called from the Save API to say "hey I just deleted a checklist, clean up the scoring record"
             EventHandler<MsgHandlerEventArgs> deleteChecklistScore = (sender, natsargs) =>
@@ -215,6 +248,8 @@ namespace openrmf_msg_score
             IAsyncSubscription asyncNew = c.SubscribeAsync("openrmf.checklist.save.new", newChecklistScore);
             logger.Info("setting up the OpenRMF update score subscriptions");
             IAsyncSubscription asyncUpdate = c.SubscribeAsync("openrmf.checklist.save.update", updateChecklistScore);
+            logger.Info("Report Message Client: setting up the OpenRMF update single vulnerability subscriptions");
+            IAsyncSubscription asyncVulnerabilityUpdate = c.SubscribeAsync("openrmf.checklist.save.vulnerability.update", updateSingleVulnerabilityScore);
             logger.Info("setting up the OpenRMF delete score subscriptions");
             IAsyncSubscription asyncDelete = c.SubscribeAsync("openrmf.checklist.delete", deleteChecklistScore);
             logger.Info("setting up the OpenRMF score read subscription");
