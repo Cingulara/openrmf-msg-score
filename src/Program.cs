@@ -179,8 +179,10 @@ namespace openrmf_msg_score
                     if (!string.IsNullOrEmpty(Encoding.UTF8.GetString(natsargs.Message.Data))) {
                         Score score = new Score();
                         Settings s = new Settings();
-                        s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
-                        s.Database = Environment.GetEnvironmentVariable("MONGODB");
+                        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DBTYPE")) || Environment.GetEnvironmentVariable("DBTYPE").ToLower() == "mongo") {
+                            s.ConnectionString = Environment.GetEnvironmentVariable("DBCONNECTION");
+                            s.Database = Environment.GetEnvironmentVariable("DB");
+                        }
                         ScoreRepository _scoreRepo = new ScoreRepository(s);
                         logger.Info("Retrieving Score for artifactId {0}", score.artifactId.ToString());
                         score = _scoreRepo.GetScorebyArtifact(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
@@ -215,8 +217,10 @@ namespace openrmf_msg_score
                     if (!string.IsNullOrEmpty(Encoding.UTF8.GetString(natsargs.Message.Data))) {
                         IEnumerable<Score> scores;
                         Settings s = new Settings();
-                        s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
-                        s.Database = Environment.GetEnvironmentVariable("MONGODB");
+                        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DBTYPE")) || Environment.GetEnvironmentVariable("DBTYPE").ToLower() == "mongo") {
+                            s.ConnectionString = Environment.GetEnvironmentVariable("DBCONNECTION");
+                            s.Database = Environment.GetEnvironmentVariable("DB");
+                        }
                         ScoreRepository _scoreRepo = new ScoreRepository(s);
                         logger.Info("Retrieving Score for system {0}", Encoding.UTF8.GetString(natsargs.Message.Data));
                         scores = _scoreRepo.GetSystemScores(Encoding.UTF8.GetString(natsargs.Message.Data)).GetAwaiter().GetResult();
