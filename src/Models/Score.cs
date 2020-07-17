@@ -65,8 +65,10 @@ namespace openrmf_msg_score.Models
         public async void SaveScore () {
             try {
                 Settings s = new Settings();
-                s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
-                s.Database = Environment.GetEnvironmentVariable("MONGODB");
+                if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DBTYPE")) || Environment.GetEnvironmentVariable("DBTYPE").ToLower() == "mongo") {
+                    s.ConnectionString = Environment.GetEnvironmentVariable("DBCONNECTION");
+                    s.Database = Environment.GetEnvironmentVariable("DB");
+                }
 
                 ScoreRepository _scoreRepo = new ScoreRepository(s);
                 await _scoreRepo.AddScore(this);
@@ -80,8 +82,10 @@ namespace openrmf_msg_score.Models
         public async void UpdateScore () {
             try {
                 Settings s = new Settings();
-                s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
-                s.Database = Environment.GetEnvironmentVariable("MONGODB");
+                if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DBTYPE")) || Environment.GetEnvironmentVariable("DBTYPE").ToLower() == "mongo") {
+                    s.ConnectionString = Environment.GetEnvironmentVariable("DBCONNECTION");
+                    s.Database = Environment.GetEnvironmentVariable("DB");
+                }
 
                 ScoreRepository _scoreRepo = new ScoreRepository(s);
                 await _scoreRepo.UpdateScore(this);
@@ -95,8 +99,10 @@ namespace openrmf_msg_score.Models
         public async void RemoveScore () {
             try {
                 Settings s = new Settings();
-                s.ConnectionString = Environment.GetEnvironmentVariable("MONGODBCONNECTION");
-                s.Database = Environment.GetEnvironmentVariable("MONGODB");
+                if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DBTYPE")) || Environment.GetEnvironmentVariable("DBTYPE").ToLower() == "mongo") {
+                    s.ConnectionString = Environment.GetEnvironmentVariable("DBCONNECTION");
+                    s.Database = Environment.GetEnvironmentVariable("DB");
+                }
 
                 ScoreRepository _scoreRepo = new ScoreRepository(s);
                 await _scoreRepo.RemoveScore(this.artifactId);
