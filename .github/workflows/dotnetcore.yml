@@ -30,10 +30,8 @@ jobs:
       run: docker build . --file ./Dockerfile --tag localbuild/openrmf-msg-score:latest
     - uses: anchore/scan-action@v2
       with:
-        image-reference: "localbuild/openrmf-msg-score:latest"
-        dockerfile-path: "./Dockerfile"
+        image: "localbuild/openrmf-msg-score:latest"
         fail-build: false
         debug: true
-        include-app-packages: true
     - name: anchore inline scan JSON results
       run: for j in `ls ./anchore-reports/*.json`; do echo "---- ${j} ----"; cat ${j}; echo; done
