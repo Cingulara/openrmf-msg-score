@@ -33,43 +33,85 @@ namespace openrmf_msg_score.Classes
                 Score score = new Score();
                 // CAT 1
                 score.totalCat1NotReviewed = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_reviewed" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "high").FirstOrDefault() != null).Count();
                 score.totalCat1NotApplicable = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_applicable" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "high").FirstOrDefault() != null).Count();
                 score.totalCat1Open = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "open" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "high").FirstOrDefault() != null).Count();
                 score.totalCat1NotAFinding = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "notafinding" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "high").FirstOrDefault() != null).Count();
                 // CAT 2
                 score.totalCat2NotReviewed = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_reviewed" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "medium").FirstOrDefault() != null).Count();
                 score.totalCat2NotApplicable = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_applicable" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "medium").FirstOrDefault() != null).Count();
                 score.totalCat2Open = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "open" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "medium").FirstOrDefault() != null).Count();
                 score.totalCat2NotAFinding = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "notafinding" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "medium").FirstOrDefault() != null).Count();
                 // CAT 3
                 score.totalCat3NotReviewed = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_reviewed" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "low").FirstOrDefault() != null).Count();
                 score.totalCat3NotApplicable = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_applicable" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "low").FirstOrDefault() != null).Count();
                 score.totalCat3Open = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "open" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "low").FirstOrDefault() != null).Count();
                 score.totalCat3NotAFinding = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "notafinding" && 
+                        string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && 
                         x.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity" && 
                                                y.ATTRIBUTE_DATA == "low").FirstOrDefault() != null).Count();
+
+                // SEVERITY_OVERRIDE IS NOT NULL
+
+                // CAT 1
+                score.totalCat1NotReviewed = score.totalCat1NotReviewed + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_reviewed" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "high").Count();
+                score.totalCat1NotApplicable = score.totalCat1NotApplicable + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_applicable" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "high").Count();
+                score.totalCat1Open = score.totalCat1Open + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "open" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "high").Count();
+                score.totalCat1NotAFinding = score.totalCat1NotAFinding + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "notafinding" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "high").Count();
+                // CAT 2
+                score.totalCat2NotReviewed = score.totalCat2NotReviewed + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_reviewed" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "medium").Count();
+                score.totalCat2NotApplicable = score.totalCat2NotApplicable + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_applicable" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "medium").Count();
+                score.totalCat2Open = score.totalCat2Open + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "open" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "medium").Count();
+                score.totalCat2NotAFinding = score.totalCat2NotAFinding + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "notafinding" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "medium").Count();
+                // CAT 3
+                score.totalCat3NotReviewed = score.totalCat3NotReviewed + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_reviewed" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "low").Count();
+                score.totalCat3NotApplicable = score.totalCat3NotApplicable + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "not_applicable" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "low").Count();
+                score.totalCat3Open = score.totalCat3Open + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "open" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "low").Count();
+                score.totalCat3NotAFinding = score.totalCat3NotAFinding = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "notafinding" && 
+                        !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "low").Count();
                 return score;
             }
             catch (Exception ex) {
