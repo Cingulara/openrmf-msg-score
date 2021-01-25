@@ -110,7 +110,7 @@ namespace openrmf_msg_score.Classes
                         !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "low").Count();
                 score.totalCat3Open = score.totalCat3Open + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "open" && 
                         !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "low").Count();
-                score.totalCat3NotAFinding = score.totalCat3NotAFinding = xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "notafinding" && 
+                score.totalCat3NotAFinding = score.totalCat3NotAFinding + xml.STIGS.iSTIG.VULN.Where(x => x.STATUS.ToLower() == "notafinding" && 
                         !string.IsNullOrEmpty(x.SEVERITY_OVERRIDE) && x.SEVERITY_OVERRIDE.ToLower() == "low").Count();
                 return score;
             }
