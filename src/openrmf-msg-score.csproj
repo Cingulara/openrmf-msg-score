@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>openrmf_msg_score</RootNamespace>
     <ProjectGuid>{935d6f6d-15ec-4948-8128-df1a3782a301}</ProjectGuid>
-    <Version>1.02.01</Version>
+    <Version>1.06.00</Version>
     <InformationalVersion>This is the OpenRMF Tool Messaging API for scoring checklists from Cingulara</InformationalVersion>
   </PropertyGroup>
 

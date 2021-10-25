@@ -20,7 +20,7 @@ namespace openrmf_msg_score.Classes
         public static CHECKLIST LoadChecklist(string rawChecklist) {
             CHECKLIST myChecklist = new CHECKLIST();
             XmlSerializer serializer = new XmlSerializer(typeof(CHECKLIST));
-            rawChecklist = rawChecklist.Replace("\n","").Replace("\t","");
+            rawChecklist = rawChecklist.Replace("\t","");
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(rawChecklist);
             XmlNodeList assetList = xmlDoc.GetElementsByTagName("ASSET");
