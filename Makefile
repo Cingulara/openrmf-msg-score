@@ -1,4 +1,4 @@
-VERSION ?= 1.04.00
+VERSION ?= 1.06.00
 NAME ?= "openrmf-msg-score"
 AUTHOR ?= "Dale Bingham"
 NO_CACHE ?= false
