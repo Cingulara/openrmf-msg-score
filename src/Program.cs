@@ -22,6 +22,35 @@ namespace openrmf_msg_score
             LogManager.Configuration = new XmlLoggingConfiguration($"{AppContext.BaseDirectory}nlog.config");
 
             var logger = LogManager.GetLogger("openrmf-msg-score");
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LOGLEVEL"))) // default
+                LogManager.Configuration.Variables["logLevel"] = "Warn";
+            else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LOGLEVEL"))) {
+                switch (Environment.GetEnvironmentVariable("LOGLEVEL"))
+                {
+                    case "5":
+                        LogManager.Configuration.Variables["logLevel"] = "Critical";
+                        break;
+                    case "4":
+                        LogManager.Configuration.Variables["logLevel"] = "Error";
+                        break;
+                    case "3":
+                        LogManager.Configuration.Variables["logLevel"] = "Warn";
+                        break;
+                    case "2":
+                        LogManager.Configuration.Variables["logLevel"] = "Info";
+                        break;
+                    case "1":
+                        LogManager.Configuration.Variables["logLevel"] = "Debug";
+                        break;
+                    case "0":
+                        LogManager.Configuration.Variables["logLevel"] = "Trace";
+                        break;
+                    default:
+                        LogManager.Configuration.Variables["logLevel"] = "Warn";
+                        break;
+                }
+            }
+            LogManager.ReconfigExistingLoggers();
 
             // Create a new connection factory to create a connection.
             ConnectionFactory cf = new ConnectionFactory();
