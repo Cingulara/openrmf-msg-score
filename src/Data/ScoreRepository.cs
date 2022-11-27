@@ -19,16 +19,8 @@ namespace openrmf_msg_score.Data {
 
         public async Task<IEnumerable<Score>> GetAllScores()
         {
-            try
-            {
                 return await _context.Scores
                         .Find(_ => true).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
         }
 
         private ObjectId GetInternalId(string id)
@@ -44,109 +36,50 @@ namespace openrmf_msg_score.Data {
         //
         public async Task<Score> GetScore(string id)
         {
-            try
-            {
                 return await _context.Scores.Find(Score => Score.InternalId == GetInternalId(id)).FirstOrDefaultAsync();
-            }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
         }
 
         // query after artifactId
         public async Task<Score> GetScorebyArtifact(string artifactId)
         {
-            try
-            {
                 return await _context.Scores.Find(Score => Score.artifactId == GetInternalId(artifactId)).FirstOrDefaultAsync();
-             }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
         }
         
         // query after body text, updated time, and header image size
-        //
         public async Task<IEnumerable<Score>> GetScore(string bodyText, DateTime updatedFrom, long headerSizeLimit)
         {
-            try
-            {
                 var query = _context.Scores.Find(Score => Score.title.Contains(bodyText) &&
                                     Score.updatedOn >= updatedFrom);
 
                 return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
         }
         
         public async Task<IEnumerable<Score>> GetSystemScores(string systemGroupId)
         {
-            try
-            {
                 return await _context.Scores
                     .Find(x => x.systemGroupId == systemGroupId).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
         }
 
         public async Task<Score> AddScore(Score item)
         {
-            try
-            {
                 await _context.Scores.InsertOneAsync(item);
                 return item;
-            }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
         }
 
         public async Task<bool> RemoveScore(ObjectId id)
         {
-            try
-            {
                 DeleteResult actionResult = await _context.Scores.DeleteOneAsync(Builders<Score>.Filter.Eq("artifactId", id));
                 return actionResult.IsAcknowledged && actionResult.DeletedCount > 0;
-            }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
         }
 
         private async Task<Score> GetScoreByArtifact(ObjectId artifactId)
         {
-            try
-            {
                 return await _context.Scores.Find(Score => Score.artifactId == artifactId).FirstOrDefaultAsync();
-            }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
         }
         
         public async Task<bool> UpdateScore(Score body)
         {
             var filter = Builders<Score>.Filter.Eq(s => s.artifactId, body.artifactId);
-            try
-            {
                 // get the old InternalId as we are going off artifactid not InternalId for this
                 var oldScore = await GetScoreByArtifact(body.artifactId);
                 if (oldScore != null){
@@ -156,7 +89,7 @@ namespace openrmf_msg_score.Data {
                 {
                     body.created = DateTime.Now;
                     var result = await AddScore(body);
-                    if (result.InternalId != null && !result.InternalId.ToString().StartsWith("0000"))
+                    if (!result.InternalId.ToString().StartsWith("0000"))
                         return true;
                     else
                         return false;
@@ -165,18 +98,12 @@ namespace openrmf_msg_score.Data {
                 if (actionResult.ModifiedCount == 0) { //never was entered, so Insert
                     body.created = DateTime.Now;
                     var result = await AddScore(body);
-                    if (result.InternalId != null && !result.InternalId.ToString().StartsWith("0000"))
+                    if (!result.InternalId.ToString().StartsWith("0000"))
                         return true;
                     else
                         return false;
                 }
                 return actionResult.IsAcknowledged && actionResult.ModifiedCount > 0;
-            }
-            catch (Exception ex)
-            {
-                // log or manage the exception
-                throw ex;
-            }
         }
     }
 }
