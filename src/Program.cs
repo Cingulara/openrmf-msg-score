@@ -122,8 +122,8 @@ namespace openrmf_msg_score
             {
                 try {
                     // print the message
-                    Console.WriteLine(natsargs.Message.Subject);
-                    Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
+                    logger.Info("New NATS subject: {0}", natsargs.Message.Subject);
+                    logger.Info("New NATS data: {0}",Encoding.UTF8.GetString(natsargs.Message.Data));
                     Artifact checklist = GetChecklist(c, Encoding.UTF8.GetString(natsargs.Message.Data));
                     if (checklist != null) {
                         Score score = ScoringEngine.ScoreChecklistString(checklist.rawChecklist);   
@@ -151,8 +151,8 @@ namespace openrmf_msg_score
             {
                 try {
                     // print the message
-                    Console.WriteLine(natsargs.Message.Subject);
-                    Console.WriteLine(Encoding.UTF8.GetString(natsargs.Message.Data));
+                    logger.Info("New NATS subject: {0}", natsargs.Message.Subject);
+                    logger.Info("New NATS data: {0}",Encoding.UTF8.GetString(natsargs.Message.Data));
                     Dictionary<string, string> vulnAttributes = JsonConvert.DeserializeObject<Dictionary<string, string>>(Compression.DecompressString(Encoding.UTF8.GetString(natsargs.Message.Data)));
                     if (vulnAttributes != null) {
                         Artifact checklist = GetChecklist(c, vulnAttributes["artifactId"]);
